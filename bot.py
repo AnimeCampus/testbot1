@@ -16,29 +16,29 @@ response = requests.get(image_url)
 if response.status_code == 200:
     with open('local_image.jpg', 'wb') as image_file:
         image_file.write(response.content)
+
+    # Define the parameters for the search
+    params = {
+        'output_type': 2,  # JSON output
+        'api_key': api_key,
+    }
+
+    # Open and read the local image file
+    with open('local_image.jpg', 'rb') as image_file:
+        files = {'file': ('local_image.jpg', image_file)}
+
+    # Make a POST request to the SauceNAO API
+    response = requests.post(url, data=params, files=files)
+
+    # Process the response
+    if response.status_code == 200:
+        data = response.json()
+        # Handle the data as needed
+    else:
+        print(f"Error: {response.status_code}")
+        print(response.text)
+
+    # Clean up: Delete the local image file
+    os.remove('local_image.jpg')
 else:
     print(f"Failed to download the image: {response.status_code}")
-
-# Define the parameters for the search
-params = {
-    'output_type': 2,  # JSON output
-    'api_key': api_key,
-}
-
-# Open and read the local image file
-with open('local_image.jpg', 'rb') as image_file:
-    files = {'file': image_file}
-
-# Make a POST request to the SauceNAO API
-response = requests.post(url, data=params, files=files)
-
-# Process the response
-if response.status_code == 200:
-    data = response.json()
-    # Handle the data as needed
-else:
-    print(f"Error: {response.status_code}")
-    print(response.text)
-
-# Clean up: Delete the local image file
-os.remove('local_image.jpg')
